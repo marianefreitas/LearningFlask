@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import pandas as pd
 
 app = Flask(__name__,)
@@ -15,9 +15,9 @@ def upload():
 @app.route("/data", methods=['GET', 'POST'])
 def data():
     if request.method == 'POST':
-        file = request.form['uploadFile']
+        file = request.files['uploadFile']
         print(" file => ", file)
-        data = pd.read_excel(file, engine="openpyxl")
+        data = pd.read_excel(file)
         print(" data => ", data)
         return render_template("data.html", data=data)
 
