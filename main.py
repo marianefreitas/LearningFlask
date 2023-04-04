@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import pandas as pd
-import xlwings as xw
+
 
 
 app = Flask(__name__,)
@@ -21,13 +21,31 @@ def data():
         print(" file => ", file)
        
         xl = pd.ExcelFile(file)
-      
+        print(xl.sheet_names)
+
+# O atributo nrows precisa ser dinamico
+# Formatar as datas e tirar o horário
+
+        def convert_to_int(row):
+          return int(row)
+        
+        def convert_transferido(row):
+            if row.lower() == 'x':
+                return True
+            else:
+                return row
+
         df = pd.read_excel(file, 
                            sheet_name="Lista Presença_Alunos",
                            header=12,
-                           usecols="B:AA")
+                           usecols="A:AA",
+                           nrows=31,
+                           converters={'Nº Aluno':convert_to_int,"Unnamed: 3": convert_transferido})
         
-        print(" df=> ",  df.tail() )
+        df = df.rename(columns={"Unnamed: 3": " Transferido"})
+
+        df.fillna(False, inplace=True)
+        
         return render_template("data.html", data=df.to_html())
 
 if __name__ == "__main__":
