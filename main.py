@@ -25,6 +25,7 @@ def data():
 
 # O atributo nrows precisa ser dinamico
 # Formatar as datas e tirar o horário
+# remover coluna de indices?
 
         def convert_to_int(row):
           return int(row)
@@ -36,16 +37,17 @@ def data():
                 return row
 
         df = pd.read_excel(file, 
-                           sheet_name="Lista Presença_Alunos",
+                           sheet_name=xl.sheet_names[5],
                            header=12,
                            usecols="A:AA",
                            nrows=31,
-                           converters={'Nº Aluno':convert_to_int,"Unnamed: 3": convert_transferido})
+                           converters={'Nº Aluno':convert_to_int,"Unnamed: 3": convert_transferido},
+                           index_col=False)
         
         df = df.rename(columns={"Unnamed: 3": " Transferido"})
 
         df.fillna(False, inplace=True)
-        
+
         return render_template("data.html", data=df.to_html())
 
 if __name__ == "__main__":
