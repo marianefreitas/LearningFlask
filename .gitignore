@@ -1,4 +1,5 @@
 venv/
 *.xlsx
 *.pyc
+*.db
 __pycache__
